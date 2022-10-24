@@ -1,0 +1,12 @@
+*
+
+!src/
+!src/**
+
+!include/
+!include/**
+
+!CMakeLists.txt
+!package.xml
+!.gitignore
+!README.md
