@@ -6,6 +6,9 @@
 !include/
 !include/**
 
+!cfg/
+!cfg/**
+
 !CMakeLists.txt
 !package.xml
 !.gitignore

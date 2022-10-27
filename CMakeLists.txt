@@ -14,6 +14,7 @@ add_definitions(${PCL_DEFINITIONS})
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  dynamic_reconfigure
   pcl_ros
   roscpp
   roscpp
@@ -23,8 +24,10 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(Boost REQUIRED)
+generate_dynamic_reconfigure_options(
+  cfg/MyParams.cfg
+)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -127,6 +130,7 @@ catkin_package(
 include_directories(
   include/pcl_subscriber
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 file(GLOB_RECURSE SOURCE_FILES
@@ -152,6 +156,7 @@ file(GLOB_RECURSE HEADER_FILES
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node ${HEADER_FILES} ${SOURCE_FILES})
+add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_gencfg)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

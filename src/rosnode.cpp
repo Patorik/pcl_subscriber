@@ -7,11 +7,25 @@ RosNode::RosNode(int argc, char **argv, std::string &topic_name_sub, float dista
     ros::init(argc, argv, "pointcloud_listener");
     ROS_INFO_STREAM("Node started: " << ros::this_node::getName());
 
+    dynamic_reconfigure::Server<my_dyn_rec::MyParamsConfig> server;
+    dynamic_reconfigure::Server<my_dyn_rec::MyParamsConfig>::CallbackType f;
+
+    f = boost::bind(&RosNode::paramsCallback, this, _1, _2);
+    server.setCallback(f);
+
     ros::NodeHandle n;
     ros::Subscriber sub = n.subscribe(topic_name_sub, 1, &RosNode::cloudCallback, this);
     pcl_pub = n.advertise<pcl::PCLPointCloud2>("pcl_published", 1);
 
     ros::spin();
+}
+
+void RosNode::paramsCallback(my_dyn_rec::MyParamsConfig &config, uint32_t level)
+{
+    // UPDATE GLOBAL VARIABLES
+    this->distance = config.distance;
+    
+    ROS_INFO_STREAM("Updated params :\n" << "Distance:\t" << this->distance);
 }
 
 void RosNode::cloudCallback(const pcl::PCLPointCloud2 &cloud_msg){
@@ -46,6 +60,7 @@ void RosNode::cloudCallback(const pcl::PCLPointCloud2 &cloud_msg){
             cloud_filtered_pub.push_back(c_point);
         }
     }
+    
     pcl_pub.publish(cloud_filtered_pub);
     cloud_filtered_pub.clear();
 }

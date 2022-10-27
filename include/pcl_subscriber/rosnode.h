@@ -15,12 +15,16 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_types.h>
 #include <pcl/PCLPointCloud2.h>
+#include <pcl/point_cloud.h>
 #include <pcl/conversions.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl_ros/transforms.h>
 #include <pcl_ros/point_cloud.h>
+
+#include <dynamic_reconfigure/server.h>
+#include <pcl_subscriber/MyParamsConfig.h>
 
 class RosNode{
 private:
@@ -30,6 +34,7 @@ private:
     float distance;
 public:
     RosNode(int argc, char **argv, std::string &topic_name_sub, float distance=10);
+    void paramsCallback(my_dyn_rec::MyParamsConfig &config, uint32_t level);
     void cloudCallback(const pcl::PCLPointCloud2 &cloud_msg);
     float calculateDistance(const float &x, const float &y, const float &z);
 };
